@@ -1,0 +1,161 @@
+@page "/students"
+@attribute [Authorize]
+@inject SurveyClient.Services.StudentService StudentService
+
+<PageTitle>Students</PageTitle>
+
+<h1>Students</h1>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="alert @(isError ? "alert-danger" : "alert-success")">@statusMessage</div>
+}
+
+<div class="row">
+    <div class="col-md-7">
+        @if (students is null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else if (students.Count == 0)
+        {
+            <p>No students yet.</p>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Major</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in students)
+                    {
+                        <tr>
+                            <td>@student.Name</td>
+                            <td>@student.Age</td>
+                            <td>@student.Major</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning me-2" @onclick="() => StartEdit(student)">Edit</button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteStudent(student.Id)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div class="col-md-5">
+        <h4>@(isEditMode ? "Edit student" : "Add student")</h4>
+        <EditForm Model="formModel" OnValidSubmit="SaveStudent">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <InputText class="form-control" @bind-Value="formModel.Name" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Age</label>
+                <InputNumber class="form-control" @bind-Value="formModel.Age" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Major</label>
+                <InputText class="form-control" @bind-Value="formModel.Major" />
+            </div>
+
+            <button class="btn btn-primary me-2" type="submit">@(isEditMode ? "Update" : "Add")</button>
+            @if (isEditMode)
+            {
+                <button class="btn btn-secondary" type="button" @onclick="CancelEdit">Cancel</button>
+            }
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private List<Student>? students;
+    private Student formModel = new();
+    private bool isEditMode;
+    private string? statusMessage;
+    private bool isError;
+
+    protected override async Task OnInitializedAsync() => await LoadStudents();
+
+    private async Task LoadStudents()
+    {
+        try
+        {
+            students = await StudentService.GetAllAsync();
+            isError = false;
+            statusMessage = null;
+        }
+        catch (Exception ex)
+        {
+            students = [];
+            isError = true;
+            statusMessage = $"Failed to load students: {ex.Message}";
+        }
+    }
+
+    private async Task SaveStudent()
+    {
+        HttpResponseMessage response = isEditMode
+            ? await StudentService.UpdateAsync(formModel)
+            : await StudentService.CreateAsync(formModel);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            isError = true;
+            statusMessage = $"Operation failed ({(int)response.StatusCode}).";
+            return;
+        }
+
+        isError = false;
+        statusMessage = isEditMode ? "Student updated." : "Student added.";
+        formModel = new Student();
+        isEditMode = false;
+        await LoadStudents();
+    }
+
+    private void StartEdit(Student student)
+    {
+        formModel = new Student
+        {
+            Id = student.Id,
+            Name = student.Name,
+            Age = student.Age,
+            Major = student.Major
+        };
+
+        isEditMode = true;
+        statusMessage = null;
+    }
+
+    private void CancelEdit()
+    {
+        isEditMode = false;
+        formModel = new Student();
+        statusMessage = null;
+    }
+
+    private async Task DeleteStudent(int id)
+    {
+        var response = await StudentService.DeleteAsync(id);
+        if (!response.IsSuccessStatusCode)
+        {
+            isError = true;
+            statusMessage = $"Delete failed ({(int)response.StatusCode}).";
+            return;
+        }
+
+        isError = false;
+        statusMessage = "Student deleted.";
+        await LoadStudents();
+    }
+}

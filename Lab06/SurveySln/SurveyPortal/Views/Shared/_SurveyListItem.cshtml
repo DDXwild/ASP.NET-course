@@ -1,0 +1,25 @@
+﻿@using SurveyPortal.Models.Survey.Survey
+@model Survey
+
+<div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title">@Model.Title</h2>
+            <p class="card-text">@Model.Description</p>
+            <p><strong>Survey Created By: </strong>@Model.Company.Name</p>
+            <p><strong>Created:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            <span class="badge bg-@(Model.IsActive ? "success" : "secondary")">
+                @(Model.IsActive ? "Active" : "Over")
+            </span>
+            <br />
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a asp-action="Details" asp-route-id="@Model.SurveyID" class="btn btn-outline-primary">Details</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Update" asp-route-id="@Model.SurveyID" class="btn btn-outline-secondary">Edit</a>
+                }
+            </div>
+            
+        </div>
+    </div>
+</div>

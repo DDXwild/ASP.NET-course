@@ -1,0 +1,39 @@
+﻿@model SurveyPortal.Models.ViewModels.SurveyListViewModel
+
+@{
+    ViewData["ShowNavigationMenu"] = true;
+}
+<div class="row">
+    @if (!Model.Surveys.Any())
+    {
+        <h1 class="d-flex justify-content-center fs-1">No surveys match your selected filters</h1>
+    }
+    else
+    {
+        @foreach (var p in Model.Surveys)
+        {
+            <partial name="_SurveyListItem" model="p" />
+        }
+    }
+</div>
+@if (User.IsInRole("Admin"))
+{
+    <a asp-action="Create" class="btn btn-primary w-100 mb-3 p-3">Create Survey</a>
+}
+<nav>
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PagingInfo.CurrentPage ? "active" : "")">
+                <a class="page-link"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-category="@Model.CurrentCategory"
+                   asp-route-company="@Model.CurrentCompany">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>

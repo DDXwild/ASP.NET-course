@@ -1,0 +1,55 @@
+﻿@model IEnumerable<string>
+@{
+    string? selectedCategory = Context.Request.Query["category"];
+    string? selectedCompany = Context.Request.Query["company"];
+}
+
+<div class="card mb-3">
+    <div class="card-header p-0">
+        <button class="btn w-100 text-start text-dark" data-bs-toggle="collapse" data-bs-target="#categoryList" aria-expanded="false" aria-controls="categoryList">
+            <h5 class="mb-0 px-3 py-2">Categories</h5>
+        </button>
+    </div>
+    <div class="list-group collapse" id="categoryList">
+        <a asp-controller="Home" asp-action="Index"
+           asp-route-company="@selectedCompany"
+           class="list-group-item list-group-item-action @(selectedCategory == null ? "active" : "")">
+            All Categories
+        </a>
+        @foreach (var category in Model)
+        {
+            <a asp-controller="Home"
+               asp-action="Index"
+               asp-route-category="@category"
+               asp-route-company="@selectedCompany"
+               class="list-group-item list-group-item-action @(category == selectedCategory ? "active" : "")">
+                @category
+            </a>
+        }
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header p-0">
+        <button class="btn w-100 text-start text-dark" data-bs-toggle="collapse" data-bs-target="#companyList" aria-expanded="false" aria-controls="companyList">
+            <h5 class="mb-0 px-3 py-2">Companies</h5>
+        </button>
+    </div>
+    <div class="list-group collapse" id="companyList">
+        <a asp-controller="Home" asp-action="Index"
+           asp-route-category="@selectedCategory"
+           class="list-group-item list-group-item-action @(selectedCompany == null ? "active" : "")">
+            All Companies
+        </a>
+        @foreach (var company in ViewBag.Companies)
+        {
+            <a asp-controller="Home"
+               asp-action="Index"
+               asp-route-company="@company.CompanyID"
+               asp-route-category="@selectedCategory"
+               class="list-group-item list-group-item-action @(selectedCompany == company.CompanyID.ToString() ? "active" : "")">
+                @company.Name
+            </a>
+        }
+    </div>
+</div>

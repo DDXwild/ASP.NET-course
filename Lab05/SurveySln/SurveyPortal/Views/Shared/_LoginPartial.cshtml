@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using SurveyPortal.Models.Identity.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @UserManager.GetUserAsync(User).Result.Email
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" asp-controller="Accounts" asp-action="Profile">My Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" asp-controller="Accounts" asp-action="Logout">Logout</a></li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-light btn btn-primary me-2" asp-controller="Accounts" asp-action="Login">Login</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-light btn btn-primary me-2" asp-controller="Accounts" asp-action="Register">Register</a>
+    </li>
+}

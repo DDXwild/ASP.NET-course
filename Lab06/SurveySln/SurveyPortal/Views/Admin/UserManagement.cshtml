@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SurveyPortal.Models.Identity. Entities.User>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1>User Management</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        @TempData["InfoMessage"]
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Add User to Admin Role</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="AddUserToAdminRole" method="get">
+            <div class="input-group">
+                <input type="email" name="email" class="form-control" placeholder="Enter user email" required />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Add to Admin Role</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Email</td>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>
+                        <a asp-action="AddUserToAdminRole" asp-route-email="@user.Email" class="btn btn-sm btn-primary">
+                            Make Admin
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

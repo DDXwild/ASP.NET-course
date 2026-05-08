@@ -1,0 +1,63 @@
+﻿@model SurveyPortal.Models.Identity.DTO.UserForLoginDto
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="container-fluid d-flex align-items-center justify-content-center" style="background-color: #f8f9fa;">
+    <div class="card shadow w-100" style="max-width: 400px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;">
+        <div class="card-header text-white py-3 text-center" style="background-color: #0d6efd; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+            <h4 class="mb-0">Sign In</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Login" method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="your.email@example.com" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input asp-for="Password" class="form-control" type="password" id="password" />
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <span>👁️</span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <div class="mb-3 form-check">
+                    <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe" />
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </div>
+                <div class="text-center">
+                    <a href="/Accounts/VerifyEmail" class="text-decoration-none d-block mb-2">Forgot your password?</a>
+                    <span>Don't have an account?</span><a href="/Accounts/Register" class="text-decoration-none"> Register</a>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer text-center py-3">
+            <p class="mb-0">Need help? <a href="#">Contact Support</a></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/login-validation.js"></script>
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.querySelector('span').textContent = '👁️‍🗨️';
+            } else {
+                passwordInput.type = 'password';
+                this.querySelector('span').textContent = '👁️';
+            }
+        });
+    </script>
+}
