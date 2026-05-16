@@ -1,0 +1,94 @@
+﻿@model SurveyPortal.Models.Identity.Entities.User
+@{
+    ViewData["Title"] = "Edit User Roles";
+    var userRoles = ViewBag.UserRoles as IEnumerable<string>;
+    var allRoles = ViewBag.AllRoles as IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>;
+}
+
+<h1>Edit User Roles - @Model.Email</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>User Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">First Name</dt>
+                    <dd class="col-sm-8">@Model.FirstName</dd>
+
+                    <dt class="col-sm-4">Last Name</dt>
+                    <dd class="col-sm-8">@Model.LastName</dd>
+
+                    <dt class="col-sm-4">Phone Number</dt>
+                    <dd class="col-sm-8">@Model.PhoneNumber</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Current Roles</h5>
+            </div>
+            <div class="card-body">
+                @if (userRoles.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var role in userRoles)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @role
+                                <form asp-action="RemoveFromRole" method="post" style="display: inline;">
+                                    <input type="hidden" name="userId" value="@Model.Id" />
+                                    <input type="hidden" name="roleName" value="@role" />
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to remove this role?');">
+                                        Remove
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No roles assigned</p>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>Add Role</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="AddToRole" method="post">
+                    <input type="hidden" name="userId" value="@Model.Id" />
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="roleName">Select Role</label>
+                        <select name="roleName" id="roleName" class="form-control">
+                            @foreach (var role in allRoles)
+                            {
+                                if (!userRoles.Contains(role.Name))
+                                {
+                                    <option value="@role.Name">@role.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Add Role</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="UserManagement" class="btn btn-secondary">Back to List</a>
+</div>

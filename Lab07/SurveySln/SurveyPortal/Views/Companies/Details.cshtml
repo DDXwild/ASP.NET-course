@@ -1,0 +1,69 @@
+﻿@model SurveyPortal.Models.Company.Company
+
+@{
+    ViewData["Title"] = $"Company - {Model.Name}";
+}
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">@Model.Name</h1>
+        <div>
+            @if(User.IsInRole("Admin"))
+            {
+
+            <a asp-action="Edit" asp-route-id="@Model.CompanyID" class="btn btn-primary">Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model.CompanyID" class="btn btn-danger">Delete</a>
+            }
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Country</dt>
+                    <dd class="col-sm-8">@Model.Country</dd>
+
+                    <dt class="col-sm-4">Created On</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("MMM dd, yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <h5>Description</h5>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2>Surveys by @Model.Name</h2>
+
+@if (Model.Surveys != null && Model.Surveys.Any())
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var survey in Model.Surveys.OrderByDescending(s => s.CreatedAt))
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@survey.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@survey.Category</h6>
+                        <p class="card-text">@(survey.Description.Length > 100 ? survey.Description.Substring(0, 100) + "..." : survey.Description)</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Created: @survey.CreatedAt.ToString("MMM dd, yyyy", System.Globalization.CultureInfo.InvariantCulture)</small>
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@survey.SurveyID" class="btn btn-sm btn-primary">View Survey</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        No surveys have been created by this company yet.
+    </div>
+}

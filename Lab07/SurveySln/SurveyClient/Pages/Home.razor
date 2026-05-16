@@ -1,0 +1,21 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Survey Client (Blazor WebAssembly)</h1>
+
+<p>This client app demonstrates:</p>
+<ul>
+    <li>JWT register/login against ASP.NET Core Web API</li>
+    <li>Authorized CRUD operations for Students</li>
+    <li>Razor form validation with DataAnnotations</li>
+</ul>
+
+<AuthorizeView>
+    <Authorized>
+        <p>You are logged in. Open the <a href="/students">Students</a> page.</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>Please <a href="/login">log in</a> or <a href="/register">register</a>.</p>
+    </NotAuthorized>
+</AuthorizeView>

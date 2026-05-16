@@ -1,0 +1,78 @@
+﻿@model SurveyPortal.Models.Identity.DTO.UserForRegistrationDto
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="container-fluid d-flex align-items-center justify-content-center" style="background-color: #f8f9fa;">
+    <div class="card shadow w-100" style="max-width: 400px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;">
+        <div class="card-header text-white py-3 text-center" style="background-color: #0d6efd; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+            <h4 class="mb-0">Create Your Account</h4>
+        </div>
+        <div class="card-body p-4">
+            @if (ViewData.ModelState.ErrorCount > 0)
+            {
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+            }
+            <p class="small text-muted mb-3">
+                Password must be at least 8 characters and include uppercase, lowercase, and a digit.
+            </p>
+            <form asp-action="Register" method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label">First Name</label>
+                    <input asp-for="FirstName" class="form-control" placeholder="John" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label">Last Name</label>
+                    <input asp-for="LastName" class="form-control" placeholder="Doe" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="your.email@example.com" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input asp-for="Password" class="form-control" type="password" id="password" />
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <span>👁️</span>
+                        </button>
+                    </div>
+
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="PasswordConfirmation" class="form-label">Confirm Password</label>
+                    <input asp-for="PasswordConfirmation" class="form-control" type="password" />
+                    <span asp-validation-for="PasswordConfirmation" class="text-danger small"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+                <div class="text-center mt-3">
+                    <span>Already have an account?</span><a href="/Accounts/Login" class="text-decoration-none"> Sign in</a>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer text-center py-3">
+            <p class="mb-0">Need help? <a href="#">Contact Support</a></p>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="~/js/register-validation.js"></script>
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        });
+    </script>
+}

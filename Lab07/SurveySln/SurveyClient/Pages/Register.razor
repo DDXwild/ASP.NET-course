@@ -1,0 +1,56 @@
+@page "/register"
+@inject SurveyClient.Services.AuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Register</PageTitle>
+
+<h1>Register</h1>
+
+<EditForm Model="model" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Username</label>
+        <InputText class="form-control" @bind-Value="model.Username" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <InputText class="form-control" @bind-Value="model.Email" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <InputText class="form-control" type="password" @bind-Value="model.Password" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Confirm password</label>
+        <InputText class="form-control" type="password" @bind-Value="model.ConfirmPassword" />
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="alert @(isError ? "alert-danger" : "alert-success")">@statusMessage</div>
+    }
+
+    <button class="btn btn-primary" type="submit">Register</button>
+</EditForm>
+
+@code {
+    private readonly RegisterRequest model = new();
+    private string? statusMessage;
+    private bool isError;
+
+    private async Task HandleRegister()
+    {
+        var result = await AuthService.RegisterAsync(model);
+        isError = !result.Succeeded;
+        statusMessage = result.Succeeded
+            ? "Registration successful. You can now log in."
+            : result.Error;
+
+        if (result.Succeeded)
+        {
+            Navigation.NavigateTo("/login");
+        }
+    }
+}

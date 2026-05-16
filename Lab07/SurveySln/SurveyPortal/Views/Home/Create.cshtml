@@ -1,0 +1,81 @@
+﻿@model SurveyPortal.Models.Survey.Survey.Survey
+
+@{
+    ViewData["Title"] = "Create Survey";
+}
+
+<h2>Create Survey</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="SurveyID" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Category" class="form-label"></label>
+        <input asp-for="Category" class="form-control" />
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CompanyID" class="form-label">Company</label>
+        <select asp-for="CompanyID" class="form-select" asp-items="ViewBag.Companies">
+            <option value="">-- Select Company --</option>
+        </select>
+        <span asp-validation-for="CompanyID" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const title = document.querySelector("#Title");
+            const description = document.querySelector("#Description");
+
+            form.addEventListener("submit", function (e) {
+
+                const company = document.querySelector("#CompanyID");
+                let isValid = true;
+
+                if (!company.value.trim()) {
+                    document.querySelector("[data-valmsg-for='CompanyID']").textContent = "Please select a company.";
+                    isValid = false;
+                }
+
+                document.querySelectorAll(".text-danger").forEach(el => el.textContent = "");
+
+                if (!title.value.trim()) {
+                    document.querySelector("[data-valmsg-for='Title']").textContent = "Title is required.";
+                    isValid = false;
+                }
+
+                if (!description.value.trim()) {
+                    document.querySelector("[data-valmsg-for='Description']").textContent = "Description is required.";
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}
